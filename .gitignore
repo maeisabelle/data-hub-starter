@@ -3,7 +3,6 @@
 .tmp
 .settings
 .vscode
-.classpath
 .project
 
 # Ignore Gradle GUI config

@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/ds/movies",
+  "$javaClass"        : "com.marklogic.hubstarter.ds.Movies"
+}

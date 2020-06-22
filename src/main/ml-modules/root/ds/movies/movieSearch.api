@@ -1,0 +1,16 @@
+{
+  "functionName": "searchMovies",
+  "desc": "Searches for movie documents matching the given query",
+  "params": [
+    {
+      "name": "searchString",
+      "datatype": "string",
+      "desc": "The string to search for"
+    }
+  ],
+  "return": {
+    "datatype": "object",
+    "$javaClass": "com.fasterxml.jackson.databind.node.ObjectNode",
+    "desc": "A JSON object containing the search results."
+  }
+}
