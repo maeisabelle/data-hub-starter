@@ -1,7 +1,7 @@
 # Data Hub Starter Project
 
 Software
-* DHS on AWS 2.9
+* DHS on AWS 2.9.8.1
 * Data Hub: 5.1.0
 * MarkLogic: 9.0-11
 * Gradle: 5.2.1
