@@ -37,6 +37,14 @@ dependencies {
   compile group: 'com.marklogic', name: 'marklogic-client-api', version: '5.2.0'
 }
 
+/**
+ * Loads sample JSON data to a database. Change the "port" to be "mlStagingPort" to load to staging instead. 
+ * For a data hub, you would also typically invoke an ingest step of a flow to put the data in an envelope.
+ * 
+ * transform_module = "/data-hub/5/transforms/mlcp-flow-transform.sjs"
+ * transform_namespace = "http://marklogic.com/data-hub/mlcp-flow-transform"
+ * transform_param = "flow-name=<my flow name>,step=<my ingest step number>"
+ */
 task loadMoviesJson(type: com.marklogic.gradle.task.MlcpTask) {
   classpath = configurations.mlcp
   command = "IMPORT"
@@ -57,6 +65,14 @@ task loadMoviesJson(type: com.marklogic.gradle.task.MlcpTask) {
   output_permissions = "endpointUser,read,endpointUser,update"
 }
 
+/**
+ * Loads sample XML data to a database. Change the "port" to be "mlStagingPort" to load to staging instead. 
+ * For a data hub, you would also typically invoke an ingest step of a flow to put the data in an envelope.
+ * 
+ * transform_module = "/data-hub/5/transforms/mlcp-flow-transform.sjs"
+ * transform_namespace = "http://marklogic.com/data-hub/mlcp-flow-transform"
+ * transform_param = "flow-name=<my flow name>,step=<my ingest step number>"
+ */
 task loadMoviesXml(type: com.marklogic.gradle.task.MlcpTask) {
   classpath = configurations.mlcp
   command = "IMPORT"
