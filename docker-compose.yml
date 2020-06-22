@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  ml-data-hub-starter:
+    image: store/marklogicdb/marklogic-server:9.0-11-dev-centos
+    environment:
+      - MARKLOGIC_INIT=true
+      - MARKLOGIC_ADMIN_USERNAME=admin
+      - MARKLOGIC_ADMIN_PASSWORD=admin
+    volumes:
+      - 'marklogic:/var/opt/MarkLogic'
+    ports:
+      - "8000-8002:8000-8002/tcp"
+      - "8010-8011:8010-8011/tcp"
+      - "8013:8013/tcp"
+    expose:
+      - "7997"
+      - "7998"
+      - "7999"
+    hostname: "ml"
+    container_name: "ml-data-hub-starter"
+volumes:
+  marklogic:
