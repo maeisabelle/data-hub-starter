@@ -100,7 +100,7 @@ task generateMovieSearchProxies(type: com.marklogic.client.tools.gradle.Endpoint
 	serviceDeclarationFile = 'src/main/ml-modules/root/ds/movies/service.json'
 }
 
-task runMovieSearch(type: JavaExec) {
+task runMovieServiceClient(type: JavaExec) {
   doFirst {
     args = [
       "--host", mlHost,
@@ -115,5 +115,24 @@ task runMovieSearch(type: JavaExec) {
   group = "Execution"
   description = "Run a search against the movie search service"
   classpath = sourceSets.main.runtimeClasspath
-  main = "com.marklogic.hubstarter.client.MovieSearcher"
+  main = "com.marklogic.hubstarter.client.MovieServiceClient"
+}
+
+task runMovieSearch(type: JavaExec) {
+  doFirst {
+    args = [
+      "--host", mlHost,
+      "--port", mlFinalPort,
+      "--username", mlUsername,
+      "--password", mlPassword,
+      "--dhs", mlIsProvisionedEnvironment,
+      "--searchOptions", "movies",  // see src/main/ml-modules/options/movies.xml
+      searchString
+    ]
+  }
+
+  group = "Execution"
+  description = "Run a search against the search API using the movies search options"
+  classpath = sourceSets.main.runtimeClasspath
+  main = "com.marklogic.hubstarter.client.SearchClient"
 }

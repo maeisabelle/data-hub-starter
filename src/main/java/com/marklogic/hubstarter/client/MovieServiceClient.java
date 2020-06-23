@@ -18,7 +18,7 @@ import com.marklogic.hubstarter.ds.Movies;
  * Runs a search against the movieSearch data service. Specify the search string
  * as the first and only argument.
  */
-public class MovieSearcher {
+public class MovieServiceClient {
 
     protected String host;
     protected int port;
@@ -26,7 +26,7 @@ public class MovieSearcher {
     protected String password;
     protected boolean dhs;
 
-    public MovieSearcher(String host, int port, String user, String password, boolean dhs) {
+    public MovieServiceClient(String host, int port, String user, String password, boolean dhs) {
         this.host = host;
         this.port = port;
         this.user = user;
@@ -40,10 +40,12 @@ public class MovieSearcher {
         try {
             Movies moviesService = Movies.on(client);
 
+            long t1 = System.currentTimeMillis();
             ObjectNode results = moviesService.searchMovies(searchString);
+            long t2 = System.currentTimeMillis();
 
-            System.out.println("Service returned:");
             System.out.println(results.toString());
+            System.out.println("\nElapsed millis: " + (t2- t1));
         } finally {
             if (client != null) {
                 client.release();
@@ -80,7 +82,7 @@ public class MovieSearcher {
 
         String searchString = remainingArgs.get(0);
 
-        MovieSearcher searcher = new MovieSearcher(
+        MovieServiceClient searcher = new MovieServiceClient(
             props.getProperty("host", "localhost"),
             Integer.parseInt(props.getProperty("port", "8011")), 
             props.getProperty("username"),
