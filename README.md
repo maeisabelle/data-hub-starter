@@ -9,7 +9,7 @@
 * Java: 11.0.3
 
 ## Setup your local MarkLogic server and data hub
-Edit `docket-compose.yml` and set the MarkLogic admin username and password you want to use.
+Edit `docker-compose.yml` and set the MarkLogic admin username and password you want to use.
 
 ### Create the container and start MarkLogic
 
