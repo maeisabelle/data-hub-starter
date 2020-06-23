@@ -5,8 +5,8 @@ services:
     image: store/marklogicdb/marklogic-server:9.0-11-dev-centos
     environment:
       - MARKLOGIC_INIT=true
-      - MARKLOGIC_ADMIN_USERNAME=admin
-      - MARKLOGIC_ADMIN_PASSWORD=admin
+      - MARKLOGIC_ADMIN_USERNAME=<admin username>
+      - MARKLOGIC_ADMIN_PASSWORD=<admin password>
     volumes:
       - 'marklogic:/var/opt/MarkLogic'
     ports:

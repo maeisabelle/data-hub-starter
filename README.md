@@ -17,6 +17,18 @@ Edit `docket-compose.yml` and set the MarkLogic admin username and password you 
 
 ```docker-compose up```
 
+#### Setup your local build properties
+Create your `gradle-local.properties` file and set the username and password you set when you created the MarkLogic container. Add the following to `gradle-local.properties` as a starting point:
+```
+# Put your overrides from gradle.properties here
+# Don't check this in to version control
+
+mlUsername=<admin username>
+mlPassword=<admin password>
+
+sslFlag=false
+```
+
 #### Deploy the data hub and data service code
 
 ```./gradlew mlDeploy```
