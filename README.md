@@ -41,7 +41,7 @@ sslFlag=false
 
 #### Test the data service
 ```
-./gradlew runMovieSearch -PsearchString="2002"
+./gradlew runMovieServiceSearch -PsearchString="2002"
 ```
 or
 ```
@@ -73,7 +73,7 @@ _Note: be sure `gradle-dhs.properties` is not checked in to a public source cont
 
 #### Test the data service
 ```
-./gradlew runMovieSearch -PsearchString="2002" -PenvironmentName=dhs
+./gradlew runMovieServiceSearch -PsearchString="2002" -PenvironmentName=dhs
 ```
 or
 ```

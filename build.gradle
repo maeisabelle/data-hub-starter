@@ -100,7 +100,7 @@ task generateMovieSearchProxies(type: com.marklogic.client.tools.gradle.Endpoint
 	serviceDeclarationFile = 'src/main/ml-modules/root/ds/movies/service.json'
 }
 
-task runMovieServiceClient(type: JavaExec) {
+task runMovieServiceSearch(type: JavaExec) {
   doFirst {
     args = [
       "--host", mlHost,
