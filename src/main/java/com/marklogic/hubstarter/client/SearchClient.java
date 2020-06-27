@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
@@ -21,9 +23,10 @@ import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.hubstarter.auth.SimpleX509TrustManager;
 
 /**
- * Runs a search using the MarkLogic search API using a given search options name. The
- * search options must already be installed into the modules database before using this.
- * If no search options are specified, the "default" options will be used.
+ * Runs a search using the MarkLogic search API using a given search options
+ * name. The search options must already be installed into the modules database
+ * before using this. If no search options are specified, the "default" options
+ * will be used.
  */
 public class SearchClient {
 
@@ -52,17 +55,15 @@ public class SearchClient {
 
             // we can expand the capability here to query based on different parameters
             // for now, just query for the given search string as a word/phrase
-            StructuredQueryDefinition querydef = qb.and(
-                qb.term(searchString)
-            );
+            StructuredQueryDefinition querydef = qb.and(qb.term(searchString));
 
             long t1 = System.currentTimeMillis();
             SearchHandle results = queryMgr.search(querydef, new SearchHandle());
             long t2 = System.currentTimeMillis();
-    
+
             printResults(results, querydef);
 
-            System.out.println("\nElapsed millis: " + (t2- t1));
+            System.out.println("\nElapsed millis: " + (t2 - t1));
         } finally {
             if (client != null) {
                 client.release();
@@ -71,9 +72,7 @@ public class SearchClient {
     }
 
     protected void printResults(SearchHandle resultsHandle, StructuredQueryDefinition querydef) {
-        System.out.println(
-            "Matched " + resultsHandle.getTotalResults() + " documents\n"
-        );
+        System.out.println("Matched " + resultsHandle.getTotalResults() + " documents\n");
 
         // iterate over the result documents
         MatchDocumentSummary[] docSummaries = resultsHandle.getMatchResults();
@@ -108,12 +107,15 @@ public class SearchClient {
 
     DatabaseClient createDbClient() throws NoSuchAlgorithmException, KeyManagementException {
         if (dhs) {
-            SSLContext sslContext = SimpleX509TrustManager.newSSLContext();
+            X509TrustManager trustManager = new SimpleX509TrustManager();
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, new TrustManager[] { trustManager }, null);
 
-            return DatabaseClientFactory.newClient(host, port,
-                    new DatabaseClientFactory.BasicAuthContext(user, password).withSSLContext(sslContext,
-                            new SimpleX509TrustManager()),
-                    DatabaseClient.ConnectionType.GATEWAY);
+            return DatabaseClientFactory.newClient(
+                host, port,
+                new DatabaseClientFactory.BasicAuthContext(user, password).withSSLContext(sslContext, trustManager),
+                DatabaseClient.ConnectionType.GATEWAY
+            );
         } else {
             return DatabaseClientFactory.newClient(host, port,
                     new DatabaseClientFactory.DigestAuthContext(user, password));

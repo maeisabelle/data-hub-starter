@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.DatabaseClient;
@@ -55,12 +57,15 @@ public class MovieServiceClient {
 
     DatabaseClient createDbClient() throws NoSuchAlgorithmException, KeyManagementException {
         if (dhs) {
-            SSLContext sslContext = SimpleX509TrustManager.newSSLContext();
+            X509TrustManager trustManager = new SimpleX509TrustManager();
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, new TrustManager[] { trustManager }, null);
 
-            return DatabaseClientFactory.newClient(host, port,
-                    new DatabaseClientFactory.BasicAuthContext(user, password).withSSLContext(sslContext,
-                            new SimpleX509TrustManager()),
-                    DatabaseClient.ConnectionType.GATEWAY);
+            return DatabaseClientFactory.newClient(
+                host, port,
+                new DatabaseClientFactory.BasicAuthContext(user, password).withSSLContext(sslContext, trustManager),
+                DatabaseClient.ConnectionType.GATEWAY
+            );
         } else {
             return DatabaseClientFactory.newClient(host, port,
                     new DatabaseClientFactory.DigestAuthContext(user, password));
