@@ -1,0 +1,50 @@
+* cts:after-query
+* cts:and-not-query
+* cts:and-query
+* cts:before-query
+* cts:boost-query
+* cts:collection-query
+* cts:directory-query
+* cts:document-fragment-query
+* cts:document-query
+* cts:element-attribute-pair-geospatial-query
+cts:element-attribute-range-query
+cts:element-attribute-value-query
+cts:element-attribute-word-query
+cts:element-child-geospatial-query
+cts:element-geospatial-query
+cts:element-pair-geospatial-query
+cts:element-query
+cts:element-range-query
+cts:element-value-query
+cts:element-word-query
+cts:false-query
+cts:field-range-query
+cts:field-value-query
+cts:field-word-query
+cts:geospatial-region-query
+cts:json-property-child-geospatial-query
+cts:json-property-geospatial-query
+cts:json-property-pair-geospatial-query
+cts:json-property-range-query
+cts:json-property-scope-query
+cts:json-property-value-query
+cts:json-property-word-query
+cts:locks-fragment-query
+cts:lsqt-query
+cts:near-query
+cts:not-in-query
+cts:not-query
+cts:or-query
+cts:path-geospatial-query
+cts:path-range-query
+cts:period-compare-query
+cts:period-range-query
+cts:properties-fragment-query
+cts:range-query
+cts:registered-query
+cts:reverse-query
+cts:similar-query
+cts:triple-range-query
+cts:true-query
+cts:word-query
