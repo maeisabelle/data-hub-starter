@@ -38,6 +38,8 @@ dependencies {
   mlcp files("lib")
 
   compile group: 'com.marklogic', name: 'marklogic-client-api', version: '4.2.0'
+
+  compile group: 'org.json', name: 'json', version: '20200518'
 }
 
 /**
@@ -51,20 +53,24 @@ dependencies {
 task loadMoviesJson(type: com.marklogic.gradle.task.MlcpTask) {
   classpath = configurations.mlcp
   command = "IMPORT"
+
+  host = mlHost
   port = mlFinalPort.toInteger()
   ssl = sslFlag.toBoolean()
   username = mlUsername
   password = mlPassword
+  restrict_hosts = mlIsProvisionedEnvironment // DHS uses a loadbalancer
+
   input_file_path = "data/movies-json"
   input_file_type = "documents"
   document_type = "json"
+
   output_collections = "movies-json"
 
   // URI will be relative to the data/ directory
-  output_uri_replace = "${rootProject.projectDir.absolutePath}/data,''"
+  output_uri_replace = ".*/data,''"
   //output_uri_prefix = ""
   //output_uri_suffix = ""
-
   output_permissions = "endpointUser,read,endpointUser,update"
 }
 
@@ -79,22 +85,128 @@ task loadMoviesJson(type: com.marklogic.gradle.task.MlcpTask) {
 task loadMoviesXml(type: com.marklogic.gradle.task.MlcpTask) {
   classpath = configurations.mlcp
   command = "IMPORT"
+
+  host = mlHost
   port = mlFinalPort.toInteger()
   ssl = sslFlag.toBoolean()
   username = mlUsername
   password = mlPassword
+  restrict_hosts = mlIsProvisionedEnvironment // DHS uses a loadbalancer
+
   input_file_path = "data/movies-xml"
   input_file_type = "documents"
   document_type = "xml"
-  output_collections = "movies-xml"
 
+  output_collections = "movies-xml"
   // URI will be relative to the data/ directory
-  output_uri_replace = "${rootProject.projectDir.absolutePath}/data,''"
+  output_uri_replace = ".*/data,''"
   //output_uri_prefix = ""
   //output_uri_suffix = ""
-
   output_permissions = "endpointUser,read,endpointUser,update"
 }
+
+task exportMoviesArchive(type: com.marklogic.gradle.task.MlcpTask) {
+  classpath = configurations.mlcp
+  command = "EXPORT"
+
+  port = mlFinalPort.toInteger()
+  ssl = sslFlag.toBoolean()
+  username = mlUsername
+  password = mlPassword
+  restrict_hosts = mlIsProvisionedEnvironment // DHS uses a loadbalancer
+
+  output_file_path = "data/export"
+  output_type = "archive"
+}
+
+task exportMoviesXml(type: com.marklogic.gradle.task.MlcpTask) {
+  classpath = configurations.mlcp
+  command = "EXPORT"
+
+  port = mlFinalPort.toInteger()
+  ssl = sslFlag.toBoolean()
+  username = mlUsername
+  password = mlPassword
+  restrict_hosts = mlIsProvisionedEnvironment // DHS uses a loadbalancer
+
+  output_file_path = "data/export"
+}
+
+/**
+ * Copy one or more collections from a source database to your database. Source 
+ * parameters (use -P or put in a properties file):
+ *   sourceCollections=collection1,collection2
+ *   sourceHost=hostname of source cluster
+ *   sourcePort=port on the source cluster
+ *   sourceUsername=username on the source cluster
+ *   sourcePassword=password for user on the source cluster
+ *
+ * The output parameters are set based on the gradle properties file specified. See
+ * https://docs.marklogic.com/guide/mlcp/copy#chapter for more details about the MLCP
+ * copy command.
+ */
+task copyCollections(type: com.marklogic.gradle.task.MlcpTask) {
+  classpath = configurations.mlcp
+  command = "COPY"
+
+  doFirst {
+    collection_filter = sourceCollections
+
+    // set to false if you are copying docs with roles that are different than the destination
+    copy_permissions = false
+
+    // if not copying from source, set the permissions you want on the documents in the destination
+    output_permissions = "endpointUser,read,endpointUser,update"
+
+    input_host = sourceHost
+    input_port = sourcePort.toInteger()
+    input_ssl = false
+    input_username = sourceUsername
+    input_password = sourcePassword
+    restrict_input_hosts = false
+  }
+
+  output_host = mlHost
+  output_port = mlFinalPort.toInteger()
+  output_ssl = sslFlag.toBoolean()
+  output_username = mlUsername
+  output_password = mlPassword
+  restrict_output_hosts = mlIsProvisionedEnvironment // DHS uses a loadbalancer
+
+  thread_count = 4 // default threads
+}
+
+task copyCollectionsFromDHS(type: com.marklogic.gradle.task.MlcpTask) {
+  classpath = configurations.mlcp
+  command = "COPY"
+
+  doFirst {
+    collection_filter = sourceCollections
+
+    // set to false if you are copying docs with roles that are different than the destination
+    copy_permissions = true
+
+    // if not copying from source, set the permissions you want on the documents in the destination
+    //output_permissions = "endpointUser,read,endpointUser,update"
+
+    input_host = sourceHost
+    input_port = sourcePort.toInteger()
+    input_ssl = true
+    input_username = sourceUsername
+    input_password = sourcePassword
+    restrict_input_hosts = true
+  }
+
+  output_host = mlHost
+  output_port = mlFinalPort.toInteger()
+  output_ssl = sslFlag.toBoolean()
+  output_username = mlUsername
+  output_password = mlPassword
+  restrict_output_hosts = mlIsProvisionedEnvironment // DHS uses a loadbalancer
+
+  thread_count = 4 // default threads
+}
+
 
 task generateMovieSearchProxies(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
 	serviceDeclarationFile = 'src/main/ml-modules/root/ds/movies/service.json'
@@ -135,4 +247,23 @@ task runMovieSearch(type: JavaExec) {
   description = "Run a search against the search API using the movies search options"
   classpath = sourceSets.main.runtimeClasspath
   main = "com.marklogic.hubstarter.client.SearchClient"
+}
+
+task runMovieCtsSearch(type: JavaExec) {
+  doFirst {
+    args = [
+      "--host", mlHost,
+      "--port", mlFinalPort,
+      "--username", mlUsername,
+      "--password", mlPassword,
+      "--dhs", mlIsProvisionedEnvironment,
+      "--searchOptions", "movies",  // see src/main/ml-modules/options/movies.xml
+      searchString
+    ]
+  }
+
+  group = "Execution"
+  description = "Run a search against the search API using the movies search options"
+  classpath = sourceSets.main.runtimeClasspath
+  main = "com.marklogic.hubstarter.clientSearchClient"
 }
