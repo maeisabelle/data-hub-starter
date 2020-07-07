@@ -38,7 +38,7 @@ sslFlag=false
 
 ```./gradlew loadMoviesXml```
 
-### Test the data service
+### Run the data service client
 ```
 ./gradlew runMovieSearchService -PsearchString="2002"
 ```
@@ -70,7 +70,7 @@ _Note: be sure `gradle-dhs.properties` is not checked in to a public source cont
 
 ```./gradlew -PenvironmentName=dhs loadMoviesXml```
 
-### Test the data service
+### Run the data service client
 ```
 ./gradlew runMovieSearchService -PsearchString="2002" -PenvironmentName=dhs
 ```
@@ -78,6 +78,32 @@ or
 ```
 curl -u <user>:<password>  https://<DHS hostname>:8011/ds/movies/movieSearch.sjs?searchString=2002
 ```
+
+# Unit Testing
+
+The default setup of this project deploys the unit testing framework and tests along with the application code. 
+
+If you don't want the test code to be deployed to a specific environment, override the `mlModulePaths` property in your environment-specific `gradle-<env>.properties` file. Set it to the following to only deploy from `src/main/ml-modules`:
+
+```
+mlModulePaths=src/main/ml-modules
+```
+
+To run the tests, connect to the app server for the database you want to run the tests in.
+
+To run in the __data-hub-STAGING__ database:
+
+```
+http://<host>:8010/test/default.xqy
+```
+
+To run in the __data-hub-FINAL__ database:
+
+```
+http://<host>:8010/test/default.xqy
+```
+
+See https://marklogic-community.github.io/marklogic-unit-test/running/ for details on running the tests via a REST interface as well.
 
 # References
 1. Data Hub 5.1 gradle tasks - https://docs.marklogic.com/datahub/5.1/tools/gradle/gradle-tasks.html

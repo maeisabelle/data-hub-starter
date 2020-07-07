@@ -1,4 +1,11 @@
 buildscript {
+	repositories {
+		jcenter()
+		mavenLocal()
+	}
+	dependencies {
+		classpath "com.marklogic:marklogic-unit-test-client:1.0.0"
+  }
 }
 
 plugins {
@@ -40,6 +47,9 @@ dependencies {
   compile group: 'com.marklogic', name: 'marklogic-client-api', version: '4.2.0'
 
   compile group: 'org.json', name: 'json', version: '20200518'
+
+  //testCompile "com.marklogic:marklogic-junit5:1.0.0"
+  mlBundle "com.marklogic:marklogic-unit-test-modules:1.0.0"
 }
 
 /**
