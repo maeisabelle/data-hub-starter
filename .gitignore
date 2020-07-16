@@ -22,3 +22,4 @@ gradle-dhs.properties
 
 # vs code + gradle produce this as the java build output
 bin/main
+bin/test

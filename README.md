@@ -38,7 +38,7 @@ sslFlag=false
 
 ```./gradlew loadMoviesXml```
 
-### Test the data service
+### Run the data service client
 ```
 ./gradlew runMovieSearchService -PsearchString="2002"
 ```
@@ -70,7 +70,7 @@ _Note: be sure `gradle-dhs.properties` is not checked in to a public source cont
 
 ```./gradlew -PenvironmentName=dhs loadMoviesXml```
 
-### Test the data service
+### Run the data service client
 ```
 ./gradlew runMovieSearchService -PsearchString="2002" -PenvironmentName=dhs
 ```
@@ -78,6 +78,54 @@ or
 ```
 curl -u <user>:<password>  https://<DHS hostname>:8011/ds/movies/movieSearch.sjs?searchString=2002
 ```
+
+# Unit Testing
+This project also includes configuration required to write and run unit tests using the [MarkLogic Unit Test](https://marklogic-community.github.io/marklogic-unit-test/) framework.
+
+The default setup of this project deploys the unit testing framework and tests along with the application code. 
+
+If you don't want the test code to be deployed to a specific environment, override the `mlModulePaths` property in your environment-specific `gradle-<env>.properties` file. Set it to the following to only deploy from `src/main/ml-modules`:
+
+```
+mlModulePaths=src/main/ml-modules
+```
+
+## Run via the framework directly
+To run the unit tests via the framework's browser interface, connect to the app server for the database you want to run the tests in.
+
+To run in the __data-hub-STAGING__ database:
+
+```
+http://<host>:8010/test/default.xqy
+```
+
+To run in the __data-hub-FINAL__ database:
+
+```
+http://<host>:8011/test/default.xqy
+```
+
+See https://marklogic-community.github.io/marklogic-unit-test/running/ for details on running the tests via gradle or the REST interface.
+
+## Run via JUnit
+The unit tests can also be run via JUnit which has been configured for the project. The `RunDataHubUnitTestsTest` class provides the hooks for JUnit to run all of the tests in the _marklogic-unit-test_ framework.
+
+Be sure to set these properties in your `gradle-<env>.properties` file that you will use when running the tests:
+
+```
+mlTestUsername=<user to run tests as>
+mlTestPassword=<password>
+mlTestDbName=data-hub-STAGING|data-hub-FINAL
+mlTestPort=8010|8011
+```
+
+Run the tests
+
+```
+./gradlew cleanTest test
+```
+
+The test reports are stored in the `build/reports/tests/test` directory. Open `index.html` to view the results of the last test run.
 
 # References
 1. Data Hub 5.1 gradle tasks - https://docs.marklogic.com/datahub/5.1/tools/gradle/gradle-tasks.html
