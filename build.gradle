@@ -34,6 +34,10 @@ configurations {
   mlcp
 }
 
+test {
+	useJUnitPlatform()
+}
+
 dependencies {
   mlcp "com.marklogic:mlcp:9.0.11"
 
@@ -48,8 +52,16 @@ dependencies {
 
   compile group: 'org.json', name: 'json', version: '20200518'
 
-  //testCompile "com.marklogic:marklogic-junit5:1.0.0"
   mlBundle "com.marklogic:marklogic-unit-test-modules:1.0.0"
+
+	testCompile "com.marklogic:marklogic-junit5:1.0.0"
+
+	testRuntime "org.junit.jupiter:junit-jupiter-engine:5.6.2"
+
+	// Forcing Spring to use logback instead of commons-logging
+	testRuntime "ch.qos.logback:logback-classic:1.1.8"
+	testRuntime group: "org.slf4j", name: "jcl-over-slf4j", version: "1.7.22"
+	testRuntime group: "org.slf4j", name: "slf4j-api", version: "1.7.22"  
 }
 
 /**
