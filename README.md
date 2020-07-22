@@ -62,17 +62,18 @@ mlFlowOperatorUserPassword=[replace_with_flow_operator_password]
 _Note: be sure `gradle-dhs.properties` is not checked in to a public source control repository as it will contain user names and passwords. If you would like to check your `gradle-dhs.properties` into source code control, you can leave out any sensitive properties and speficy them as command line parameters using `-PparameterName=parameterValue` arguments to gradle._
 
 ### Deploy the data service code
-```./gradlew dhsDeploy -PenvironmentName=dhs -i```
+```./gradlew hubDeploy -PenvironmentName=azure -i```
+```./gradlew dhsDeploy -PenvironmentName=aws -PmlDHFVersion=5.1.0 -i```
 
 ### Load the sample data
 
-```./gradlew -PenvironmentName=dhs loadMoviesJson```
+```./gradlew -PenvironmentName=<env> loadMoviesJson```
 
-```./gradlew -PenvironmentName=dhs loadMoviesXml```
+```./gradlew -PenvironmentName=<env> loadMoviesXml```
 
 ### Run the data service client
 ```
-./gradlew runMovieSearchService -PsearchString="2002" -PenvironmentName=dhs
+./gradlew runMovieSearchService -PsearchString="2002" -PenvironmentName=<env>
 ```
 or
 ```

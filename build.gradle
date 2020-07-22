@@ -5,21 +5,29 @@ buildscript {
 	}
 	dependencies {
 		classpath "com.marklogic:marklogic-unit-test-client:1.0.0"
-  }
+        if (project.hasProperty("mlDHFVersion") && project.property("mlDHFVersion").compareToIgnoreCase("5.2.0") <= 0) {
+          classpath "gradle.plugin.com.marklogic:ml-data-hub:${mlDHFVersion}"
+        } else if (project.hasProperty("mlDHFVersion")) {
+          classpath "com.marklogic:ml-data-hub:${mlDHFVersion}"
+        } else {
+          classpath "com.marklogic:ml-data-hub:5.+"
+        }
+    }
 }
+
+
 
 plugins {
   // Gradle Properties plugin
   id 'net.saliman.properties' version '1.4.6'
 
-  // Data Hub plugin
-  id 'com.marklogic.ml-data-hub' version '5.1.0'
-
-	// Data services
-	id 'com.marklogic.ml-development-tools' version '4.2.0'
+  // Data services
+  id 'com.marklogic.ml-development-tools' version '4.2.0'
 
   id 'java'
 }
+
+apply plugin: "com.marklogic.ml-data-hub"
 
 repositories {
   mavenLocal()
@@ -61,13 +69,13 @@ dependencies {
 	// Forcing Spring to use logback instead of commons-logging
 	testRuntime "ch.qos.logback:logback-classic:1.1.8"
 	testRuntime group: "org.slf4j", name: "jcl-over-slf4j", version: "1.7.22"
-	testRuntime group: "org.slf4j", name: "slf4j-api", version: "1.7.22"  
+	testRuntime group: "org.slf4j", name: "slf4j-api", version: "1.7.22"
 }
 
 /**
- * Loads sample JSON data to a database. Change the "port" to be "mlStagingPort" to load to staging instead. 
+ * Loads sample JSON data to a database. Change the "port" to be "mlStagingPort" to load to staging instead.
  * For a data hub, you would also typically invoke an ingest step of a flow to put the data in an envelope.
- * 
+ *
  * transform_module = "/data-hub/5/transforms/mlcp-flow-transform.sjs"
  * transform_namespace = "http://marklogic.com/data-hub/mlcp-flow-transform"
  * transform_param = "flow-name=<my flow name>,step=<my ingest step number>"
@@ -97,9 +105,9 @@ task loadMoviesJson(type: com.marklogic.gradle.task.MlcpTask) {
 }
 
 /**
- * Loads sample XML data to a database. Change the "port" to be "mlStagingPort" to load to staging instead. 
+ * Loads sample XML data to a database. Change the "port" to be "mlStagingPort" to load to staging instead.
  * For a data hub, you would also typically invoke an ingest step of a flow to put the data in an envelope.
- * 
+ *
  * transform_module = "/data-hub/5/transforms/mlcp-flow-transform.sjs"
  * transform_namespace = "http://marklogic.com/data-hub/mlcp-flow-transform"
  * transform_param = "flow-name=<my flow name>,step=<my ingest step number>"
@@ -155,7 +163,7 @@ task exportMoviesXml(type: com.marklogic.gradle.task.MlcpTask) {
 }
 
 /**
- * Copy one or more collections from a source database to your database. Source 
+ * Copy one or more collections from a source database to your database. Source
  * parameters (use -P or put in a properties file):
  *   sourceCollections=collection1,collection2
  *   sourceHost=hostname of source cluster
